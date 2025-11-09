@@ -1,9 +1,9 @@
+import { EParseOutcome, IInterpreterCursor, Interpret } from "@fenralab/url";
+
 import type { Request, Response } from "../types";
 
 import { EVisitResult, RouterVisitor } from "../routing"
 import type { Endpoint } from "../routing";
-import { EParseOutcome, IInterpreterCursor, Interpret } from "../url";
-
 
 export class URISearchVisitor<
     TRequest extends Request = Request,
