@@ -1,4 +1,4 @@
-import { TMiddleware } from "../../core/middleware";
+import { Middleware } from "@fenralab/core";
 import { Request, Response } from "../types";
 
 export enum EAuthenticationStatus {
@@ -32,7 +32,7 @@ export interface IAuthenticationOptions {
 }
 
 export function Authentication(options: IAuthenticationOptions) 
-: TMiddleware<[AuthenticatedRequest, Response]> 
+: Middleware.TFunction<[AuthenticatedRequest, Response]> 
 {
 
     return async function AuthenticationMiddleware(
