@@ -1,7 +1,7 @@
 import { Middleware } from '@fenralab/core'
+import { toAST, toTokens } from "@fenralab/url";
 
 import { Request, Response, VirtualURI } from "./types";
-import { toAST, toTokens } from "./url";
 
 /**
  * 

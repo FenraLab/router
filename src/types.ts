@@ -1,7 +1,7 @@
 import * as http from 'http'
 
 import { Logger } from '@fenralab/core';
-import { Syntax } from './url';
+import { Syntax } from '@fenralab/url';
 
 export const Log = new Logger.Logger('http');
 
