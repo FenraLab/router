@@ -60,6 +60,9 @@ export class Server<
     ) {
         // Server.Logger.info(`Received ${nativeRequest.method} ${nativeRequest.url}`);
 
+        if (!nativeRequest.url) return;
+        if (!nativeRequest.method) return;
+
         const request = nativeRequest as TRequest;
         request.params = {};
         request.log = Log.child(`request:${request.method}:${request.url}`);
@@ -76,7 +79,7 @@ export class Server<
         try {
 
             // console.time('URI Matching Traversal')
-            const traversalAgent = new URISearchVisitor(request.url, request)
+            const traversalAgent = new URISearchVisitor<TRequest, TResponse, TRootRouter>(request.url!, request)
             await traversalAgent.traverse(this.router)
             if (!traversalAgent.result) throw new Exceptions.NotFound();
             // console.timeEnd('URI Matching Traversal')
@@ -84,7 +87,7 @@ export class Server<
             
             // console.time('Get Endpoint Method')
             request.params = traversalAgent.cursor.params
-            const handler = await traversalAgent.result.getHandler(request.method);
+            const handler = await traversalAgent.result.getHandler(request.method!);
             if (!handler) { throw new Exceptions.MethodNotAllowed(); }
             // console.timeEnd('Get Endpoint Method')
 
@@ -109,15 +112,17 @@ export class Server<
 
         } catch (error) {
 
+            response.statusCode = 500;
+
             if (error instanceof Exceptions.RouterManagedError) {
                 request.log.warn(`Managed error processing request: ${error.message}`);
                 error.handle(request, response);
 
-            } else {
+            } else if (error instanceof Error) {
                 request.log.error(`Error processing request: ${error}`);
-                request.log.trace(error.stack);
+                request.log.trace(error.stack ?? "");
 
-                response.statusCode = 500;
+            } else {
                 response.write("Internal Server Error\n");
             }
         }

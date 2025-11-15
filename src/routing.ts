@@ -12,7 +12,7 @@ export class Endpoint<
     TError = any,
 > {
     
-    public parent?: Router<Request, Response>;
+    public parent?: Router<TRequest, TResponse>;
     public handlers: Map<string, Middleware.TFunction<[TRequest, TResponse], TError>[]> = new Map();
     public middleware = new Middleware.Manager<[TRequest, TResponse]>();
 
@@ -118,7 +118,7 @@ export abstract class RouterVisitor<
     }
 
     protected async getChildren(endpoint: Router): Promise<TEndpoint[]>{
-        return endpoint.children as TEndpoint[]
+        return endpoint.children as unknown as TEndpoint[]
     }
 
     protected abstract visit(endpoint: TEndpoint): Promise<EVisitResult>;
