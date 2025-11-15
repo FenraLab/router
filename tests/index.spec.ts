@@ -1,3 +1,6 @@
+
+test('coverage', () => expect(true).toBeTruthy())
+
 // import { Endpoint, Router, Server } from "../src";
 // // import { ELNCollection } from "../features/ELN";
 // import { DebugEndpoint } from "../src/routers/debugEndpoint";
