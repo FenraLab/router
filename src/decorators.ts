@@ -6,7 +6,9 @@ import { Endpoint } from "./routing";
 export function declareHandler(method: string) {
   return function (target: any, context: ClassMethodDecoratorContext) {
     context.addInitializer(function RegisterDeclaredHandler(this: unknown) {
-      console.log(context.access.get(this));
+      // console.log(context.access.get(this));
+
+      (this as Endpoint).handle(method, context.access.get(this).bind(this))
 
       // const prop = this[context.name as keyof this];
 
