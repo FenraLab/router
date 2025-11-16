@@ -1,5 +1,4 @@
-
-test('coverage', () => expect(true).toBeTruthy())
+test("coverage", () => expect(true).toBeTruthy());
 
 // import { Endpoint, Router, Server } from "../src";
 // // import { ELNCollection } from "../features/ELN";
