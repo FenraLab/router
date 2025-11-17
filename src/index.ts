@@ -3,3 +3,4 @@ export * from "./routing";
 export { Server } from "./server";
 export * from "./types";
 export * from "./decorators";
+export * as Middlewares from "./middleware";

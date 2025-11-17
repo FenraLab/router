@@ -5,7 +5,7 @@ export interface BodyParsedRequest extends Request {
   body?: string | Promise<string>;
 }
 
-export const xml: Middleware.TFunction<[BodyParsedRequest, Response]> = async (
+export const body: Middleware.TFunction<[BodyParsedRequest, Response]> = async (
   request,
   response,
   next,

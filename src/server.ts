@@ -9,6 +9,7 @@ import * as Exceptions from "./exceptions";
 
 import { URISearchVisitor } from "./visitors/URISearch";
 
+// Todo: Extract into separate Application class
 export class Server<
   TRequest extends Request = Request,
   TResponse extends Response = Response,
@@ -69,7 +70,8 @@ export class Server<
     nativeRequest: http.IncomingMessage,
     nativeResponse: http.ServerResponse,
   ) {
-    // Server.Logger.info(`Received ${nativeRequest.method} ${nativeRequest.url}`);
+    Server.Logger.info(`Received ${nativeRequest.method} ${nativeRequest.url}`);
+    console.time("Receive and Response");
 
     if (!nativeRequest.url) return;
     if (!nativeRequest.method) return;
@@ -88,25 +90,21 @@ export class Server<
     response.log = Log.child(`response:${request.method}:${request.url}`);
 
     try {
-      // console.time('URI Matching Traversal')
       const traversalAgent = new URISearchVisitor<
         TRequest,
         TResponse,
         TRootRouter
       >(request.url!, request);
+
       await traversalAgent.traverse(this.router);
       if (!traversalAgent.result) throw new Exceptions.NotFound();
-      // console.timeEnd('URI Matching Traversal')
-
-      // console.time('Get Endpoint Method')
       request.params = traversalAgent.cursor.params;
+
       const handler = await traversalAgent.result.getHandler(request.method!);
       if (!handler) {
         throw new Exceptions.MethodNotAllowed();
       }
-      // console.timeEnd('Get Endpoint Method')
 
-      // console.time('Execute Middleware')
       const middlewares = [
         ...traversalAgent.stack.flatMap((it) => it.middleware.array),
         ...traversalAgent.result.middleware.array,
@@ -114,11 +112,6 @@ export class Server<
       ];
 
       await Middleware.invoke(middlewares, request, response);
-
-      // console.timeEnd('Execute Middleware')
-
-      // request.log.trace(`Middlewares: ${inspect(middlewares)}`)
-      // Server.Logger.success(`Successfully processed request ${request.method} ${request.url}`);
     } catch (error) {
       response.statusCode = 500;
 
@@ -134,5 +127,6 @@ export class Server<
     }
 
     response.end();
+    console.timeEnd("Receive and Response");
   }
 }
