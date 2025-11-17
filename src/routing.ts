@@ -1,5 +1,5 @@
 import { Middleware } from "@fenralab/core";
-import { toAST, toTokens, toString } from "@fenralab/url";
+import * as URI from "@fenralab/url";
 
 import { Request, Response, VirtualURI } from "./types";
 
@@ -22,13 +22,13 @@ export class Endpoint<
   public fullURI: VirtualURI = [];
 
   constructor(path: VirtualURI | string = []) {
-    if (typeof path == "string") path = toAST(toTokens(path));
+    if (typeof path == "string") path = URI.toAST(URI.toTokens(path));
     this.path = path;
     this.fullURI = this.path;
   }
 
-  getResolvedUI(parameters: Record<string, string>) {
-    return;
+  getResolvedUI(request: TRequest) {
+    return URI.toString(this.fullURI, request.params);
   }
 
   acceptParent(parent: Router<TRequest, TResponse>) {
